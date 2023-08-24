@@ -1,12 +1,21 @@
 import { createServer } from 'http';
+import { readFile } from "fs";
+
 
 const hostname = '::';
 const port = 3000;
 
 const prepareResponse = (_, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World\n');
+    res.writeHead(200, { 'Content-type': 'text/html' })
+    readFile('index.html', (error, data) => {
+        if (error) {
+            res.writeHead(404);
+            res.write('Error: File Not Found');
+        } else {
+            res.write(data);
+        }
+        res.end();
+    })
 }
 
 const server = createServer(prepareResponse);
